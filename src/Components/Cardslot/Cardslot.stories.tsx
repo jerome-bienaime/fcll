@@ -1,9 +1,8 @@
 import React from 'react';
 import type { Story } from 'storybook';
 import { Cardslot } from '.';
-import { ChildComponent } from './Cardslot.mocks';
 import { Basic as Card } from '@components/Card/Card.stories';
-import type { CardProps } from '../Card/Card';
+import type { CardProps } from '@components/Card';
 
 export default {
   title: 'Cardslot',
@@ -23,7 +22,7 @@ export const CardItem = Basic.bind({});
 CardItem.args = {
   children: <Card {...Card.args} />,
 };
-const ListTemplate = ({ items, ...args }: { items: CardProps[] }) => {
+const ListTemplate = ({ items }: { items: CardProps[] }) => {
   if (items.length === 0) {
     return <Cardslot />;
   }
