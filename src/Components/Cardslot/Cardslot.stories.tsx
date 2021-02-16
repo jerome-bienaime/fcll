@@ -1,34 +1,40 @@
 import React from 'react';
+import type { Story } from 'storybook';
 import { Cardslot } from '.';
-import type { CardProps } from '@components/Card';
 import { ChildComponent } from './Cardslot.mocks';
-import { Card } from '../Card/Card';
+import { Basic as Card } from '@components/Card/Card.stories';
+import type { CardProps } from '../Card/Card';
 
 export default {
   title: 'Cardslot',
+  component: Cardslot,
+  subcomponents: { Card },
+  parameters: {
+    docs: {
+      description: {
+        component: 'Creates a card container',
+      },
+    },
+  },
 };
 
-export const Basic: React.VFC<{}> = () => <Cardslot />;
-export const Child: React.VFC<{}> = () => (
-  <Cardslot>
-    <ChildComponent />
-  </Cardslot>
-);
-export const ThreeCards: React.VFC<{}> = () => {
-  const ThreeRandomCards: [CardProps, CardProps, CardProps] = [
-    { numberIndex: 3, cardType: 2 },
-    { numberIndex: 8, cardType: 1 },
-    { numberIndex: 5, cardType: 0 },
-  ];
-  return (
-    <>
-      {ThreeRandomCards.map((card, key) => {
-        return (
-          <Cardslot key={key}>
-            <Card {...card}></Card>
-          </Cardslot>
-        );
-      })}
-    </>
-  );
+const Basic: Story<Card> = (args: Card) => <Cardslot {...args} />;
+export const CardItem = Basic.bind({});
+CardItem.args = {
+  children: <Card {...Card.args} />,
 };
+const ListTemplate = ({ items, ...args }: { items: CardProps[] }) => {
+  if (items.length === 0) {
+    return <Cardslot />;
+  }
+  return items.map((item: CardProps) => (
+    <Cardslot>
+      <Card {...item} />
+    </Cardslot>
+  ));
+};
+export const Empty = ListTemplate.bind({});
+Empty.args = { items: [] };
+
+export const OneItem = ListTemplate.bind({});
+OneItem.args = { items: [Card.args] };
