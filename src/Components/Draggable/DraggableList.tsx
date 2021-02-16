@@ -1,8 +1,18 @@
-import React from 'react';
+import type { Store } from 'pullstate';
+import React, { ReactNode } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Card, CardProps } from '@components/Card';
+import { Cardslot } from '@components/Cardslot';
 import './draggable.css';
+import _ from 'lodash';
 
-const DraggableItem = ({ content, index }: {content: string, index: number}) => {
+const DraggableElement = ({
+  element,
+  index,
+}: {
+  element: any;
+  index: number;
+}) => {
   return (
     <Draggable draggableId={index.toString()} index={index}>
       {(provided) => {
@@ -13,7 +23,7 @@ const DraggableItem = ({ content, index }: {content: string, index: number}) => 
             {...provided.dragHandleProps}
             className="item"
           >
-            {content}
+            {React.cloneElement(element)}
           </div>
         );
       }}
@@ -21,7 +31,54 @@ const DraggableItem = ({ content, index }: {content: string, index: number}) => 
   );
 };
 
-const DraggableList = () => {
+const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
+  return (
+    <Draggable draggableId={index.toString()} index={index}>
+      {(provided) => {
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className="item"
+          >
+            <Cardslot>
+              <Card {...item} />
+            </Cardslot>
+          </div>
+        );
+      }}
+    </Draggable>
+  );
+};
+
+const DraggableList = ({
+  children,
+  store,
+}: {
+  children?: ReactNode;
+  store?: Store;
+}) => {
+  if (!children && !store) {
+    return <>nothing to dnd</>;
+  }
+
+  let items: CardProps[];
+  if (store) {
+    items = store.useState((state) => state.items);
+  }
+
+  function _move<T>(arr: Array<T>, destIndex: number, sourceIndex: number): Array<T> {
+    if (destIndex >= arr.length) {
+        var k = destIndex - arr.length + 1;
+        while (k--) {
+            arr.push(null);
+        }
+    }
+    arr.splice(destIndex, 0, arr.splice(sourceIndex, 1)[0]);
+    return arr; // for testing
+};
+
   function onDragEnd(result: any) {
     if (!result.destination) {
       return;
@@ -29,20 +86,34 @@ const DraggableList = () => {
     if (result.destination.index === result.source.index) {
       return;
     }
-    console.log('onDragEnd');
+    if (store) {
+      store.update((state) => {
+        state.items = _move(state.items, result.destination.index, result.source.index);
+      });
+    }
   }
-
-  const dataList = ['hello', 'draggable', 'world', '!'];
 
   return (
     <div className="draggableList">
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="list" direction="horizontal" >
+        <Droppable droppableId="list" direction="horizontal">
           {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps} className="list">
-              {dataList.map((content, index) => (
-                <DraggableItem content={content} index={index} />
-              ))}
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="list"
+            >
+              {items == null
+                ? React.Children.map(children, (element, index) => (
+                    <DraggableElement
+                      element={element}
+                      index={index}
+                      key={index}
+                    />
+                  ))
+                : items.map((item, index) => (
+                    <DraggableItem item={item} index={index} key={index} />
+                  ))}
               {provided.placeholder}
             </div>
           )}
