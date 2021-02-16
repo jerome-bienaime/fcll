@@ -1,0 +1,25 @@
+.cardslot {
+  @apply border border-solid rounded-md shadow mt-1 border-green-500 bg-green-400 w-24 h-32 p-2;
+
+  .empty {
+    @apply w-full h-full;
+
+    background-image: url('../../Assets/back-cardslot-white.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .card{
+    @apply flex flex-col;
+
+    .card_image {
+      @apply inline-block w-12 h-12 mx-auto text-center;
+      fill: white;
+    }
+
+    .card_number {
+      @apply text-center text-4xl my-2 text-gray-100;
+    }
+  }
+}
