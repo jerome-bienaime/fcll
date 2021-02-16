@@ -4,7 +4,7 @@ import { CardItem as Cardslot } from '@components/Cardslot/Cardslot.stories';
 import { Basic as Card } from '@components/Card/Card.stories';
 
 export default {
-  title: 'Cardslotlist',
+  title: 'CardSlot List',
   component: Cardslotlist,
   subcomponents: { Cardslot },
   parameters: {

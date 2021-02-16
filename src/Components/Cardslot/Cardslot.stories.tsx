@@ -5,7 +5,7 @@ import { Basic as Card } from '@components/Card/Card.stories';
 import type { CardProps } from '@components/Card';
 
 export default {
-  title: 'Cardslot',
+  title: 'CardSlot',
   component: Cardslot,
   subcomponents: { Card },
   parameters: {
