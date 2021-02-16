@@ -1,3 +1,9 @@
 .card {
-    @apply max-w-sm h-auto bg-green-400 text-white;
+  @apply max-w-sm h-full text-white bg-gradient-to-l rounded-md text-center;
+  &.red {
+    @apply border-red-700 border-dashed border;
+  }
+  &.black {
+    @apply border-black border-dashed border;
+  }
 }

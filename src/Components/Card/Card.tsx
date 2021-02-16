@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import type CardNumberTuple from './CardNumber';
-import "./card.css"
+import './card.css';
 
 export enum CardType {
   CLOVER,
@@ -30,14 +30,27 @@ export interface CardProps {
   numberIndex: number;
 }
 
+export const colorList:{ [key: string]: string; } = {
+  "CLOVER": 'black',
+  "SPADE": 'black',
+  "DIAMOND": 'red',
+  "HEART": 'red',
+};
+
 const Card: FC<CardProps> = ({ cardType, numberIndex }) => {
   const _cardNumber = cardNumberList[numberIndex];
-  const _cardType = CardType[cardType];
-  const _cardImage = `front-${_cardType?.toLowerCase()}-white.svg`
-  return <div className="card">
-    <span className="card_number">{_cardNumber}</span>
-    {_cardType && <img src={_cardImage} alt={_cardType} className="card_image"/>}
-  </div>;
+  const _cardType: string = CardType[cardType];
+  const _cardImage: string = `front-${_cardType.toLowerCase()}-white.svg`;
+  const _colorType: string = colorList[_cardType.toUpperCase()]
+  const _cardClass: string = `card ${_colorType}`;
+  return (
+    <div className={_cardClass}>
+      <span className="card_number">{_cardNumber}</span>
+      {_cardType && (
+        <img src={_cardImage} alt={_cardType} className="card_image" />
+      )}
+    </div>
+  );
 };
 
 export { Card };
