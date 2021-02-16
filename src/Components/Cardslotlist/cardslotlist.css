@@ -12,4 +12,9 @@
       }
     }
   }
+  &.stack {
+    .item {
+      @apply absolute;
+    }
+  }
 }
