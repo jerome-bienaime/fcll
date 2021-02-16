@@ -2,7 +2,6 @@ import React from 'react';
 import type { Cardslot } from '@components/Cardslot';
 import _ from 'lodash';
 import './cardslotlist.css';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export enum ViewType {
   STACK,
