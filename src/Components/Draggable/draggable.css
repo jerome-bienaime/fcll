@@ -1,0 +1,9 @@
+.draggableList {
+  .list {
+    @apply grid grid-cols-4 gap-8 flex-row;
+  }
+
+  .item {
+    @apply border bg-pink-200 p-4 my-2;
+  }
+}
