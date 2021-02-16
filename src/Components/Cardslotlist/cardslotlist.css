@@ -1,0 +1,15 @@
+.cardslotlist {
+  &.column {
+    @apply relative;
+
+    .item {
+      @apply absolute;
+    }
+    @for $i from 1 to 8 {
+      .item:nth-child($i) {
+        margin-top: $(i)em;
+        z-index: $i;
+      }
+    }
+  }
+}
