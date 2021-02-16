@@ -10,11 +10,9 @@ interface TimerProps {
 const Timer: FC<TimerProps> = ({ initialCount = 0}) => {
   const [counter, useCount] = React.useState(() => initialCount);
   const [playing, togglePlaying] = React.useState(() => false);
-  console.log(initialCount);
-  
 
   useEffect(() => {
-    let interval: any;
+    let interval: ReturnType<typeof setTimeout>;
     if (playing) {
       interval = setInterval(() => useCount(counter + 1), 1000);
     }
