@@ -40,7 +40,7 @@ export const colorList:{ [key: string]: string; } = {
 const Card: FC<CardProps> = ({ cardType, numberIndex }) => {
   const _cardNumber = cardNumberList[numberIndex];
   const _cardType: string = CardType[cardType];
-  const _cardImage: string = `front-${_cardType.toLowerCase()}-white.svg`;
+  const _cardImage: string = `front-${_cardType.toLowerCase()}-color.svg`;
   const _colorType: string = colorList[_cardType.toUpperCase()]
   const _cardClass: string = `card ${_colorType}`;
   return (

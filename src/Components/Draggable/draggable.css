@@ -4,6 +4,6 @@
   }
 
   .item {
-    @apply border bg-pink-200 my-2;
+    @apply border bg-pink-200 my-2 flex items-center justify-center;
   }
 }
