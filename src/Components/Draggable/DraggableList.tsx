@@ -70,13 +70,14 @@ const DraggableList = ({
 
   function _move<T>(arr: Array<T>, destIndex: number, sourceIndex: number): Array<T> {
     if (destIndex >= arr.length) {
-        var k = destIndex - arr.length + 1;
+        let k = destIndex - arr.length + 1;
+        let empty: any = new Object();
         while (k--) {
-            arr.push(null);
+            arr.push(empty);
         }
     }
     arr.splice(destIndex, 0, arr.splice(sourceIndex, 1)[0]);
-    return arr; // for testing
+    return arr;
 };
 
   function onDragEnd(result: any) {
