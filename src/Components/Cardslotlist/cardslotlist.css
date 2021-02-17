@@ -7,7 +7,8 @@
     }
     @for $i from 1 to 8 {
       .item:nth-child($i) {
-        margin-top: $(i)em;
+        $mt: calc($(i)em - 1em);
+        margin-top: $(mt);
         z-index: $i;
       }
     }
@@ -15,6 +16,11 @@
   &.stack {
     .item {
       @apply absolute;
+    }
+  }
+  &.default {
+    .item {
+      @apply font-normal;
     }
   }
 }

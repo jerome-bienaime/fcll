@@ -63,10 +63,8 @@ const DraggableCard = ({
     return <>nothing to dnd</>;
   }
 
-  let items: CardProps[];
-  if (store) {
-    items = store.useState((state) => state.items);
-  }
+  const items: CardProps[] = store?.useState((state) => state.items);
+  
 
   function _move<T>(arr: Array<T>, destIndex: number, sourceIndex: number): Array<T> {
     if (destIndex >= arr.length) {
@@ -95,9 +93,9 @@ const DraggableCard = ({
   }
 
   return (
-    <div className="draggableList">
+    <div className="draggable-card">
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="list" direction="horizontal" className="draggable">
+        <Droppable droppableId="list" direction="horizontal">
           {(provided) => (
             <div
               ref={provided.innerRef}

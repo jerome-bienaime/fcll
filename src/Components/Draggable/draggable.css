@@ -1,9 +1,31 @@
-.draggableList {
+.draggable-card {
   .list {
     @apply grid grid-cols-8 gap-2 flex-row;
   }
 
   .item {
     @apply border bg-pink-200 my-2 flex items-center justify-center;
+  }
+}
+.draggable-card-list {
+  @apply grid grid-cols-4 gap-2 flex-row;
+  .list {
+    @apply relative;
+  }
+
+  .item {
+    @apply border bg-pink-200 my-2 flex items-center justify-center relative;
+  }
+  .cardslotlist.column {
+    @apply flex justify-center;
+
+    border: 1px solid red;
+    min-height:100px;
+  }
+  .cardslotlist.normal {
+    border: 1px solid green;
+    .item {
+      @apply z-50;
+    }
   }
 }

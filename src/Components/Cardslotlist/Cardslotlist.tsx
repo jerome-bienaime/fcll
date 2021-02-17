@@ -6,6 +6,7 @@ import './cardslotlist.css';
 export enum ViewType {
   STACK,
   COLUMN,
+  NORMAL
 }
 
 export type CardProps = {
