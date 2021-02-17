@@ -10,7 +10,7 @@ export enum ViewType {
 
 export type CardProps = {
   viewType?: ViewType;
-  children: Cardslot[];
+  children: (typeof Cardslot)[];
 };
 
 const Cardslotlist: React.FC<CardProps> = ({
