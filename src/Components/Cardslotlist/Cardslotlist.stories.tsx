@@ -2,6 +2,7 @@ import React from 'react';
 import { Cardslotlist, ViewType } from '.';
 import { CardItem as Cardslot } from '@components/Cardslot/Cardslot.stories';
 import { Basic as Card } from '@components/Card/Card.stories';
+import type { CardProps } from '@components/Card';
 
 export default {
   title: 'CardSlot List',
@@ -31,7 +32,7 @@ const ListTemplate = ({
   return (
     <Cardslotlist viewType={viewType}>
       {items.length &&
-        items.map((item: {}) => {
+        items.map((item: CardProps) => {
           return (
             <Cardslot>
               <Card {...item} />
