@@ -1,12 +1,12 @@
 import React from 'react';
 import { Card } from '@components/Card';
 import { Cardslot } from '@components/Cardslot';
-import { DraggableList } from '.';
+import { DraggableCard } from '.';
 import { Store } from 'pullstate';
 
 export default {
-  title: 'Draggable List',
-  component: DraggableList,
+  title: 'Draggable Card',
+  component: DraggableCard,
 };
 
 const items = [
@@ -24,7 +24,7 @@ const cardStore = new Store({ items });
 
 const Basic = ({items}: {items: any}) => {
   return (
-    <DraggableList>
+    <DraggableCard>
       {items.length &&
         items.map((item: {}) => {
           return (
@@ -33,16 +33,16 @@ const Basic = ({items}: {items: any}) => {
             </Cardslot>
           );
         })}
-    </DraggableList>
+    </DraggableCard>
   );
 };
 
-export const ListLocal = Basic.bind({});
-ListLocal.args = {items}
+export const CardLocal = Basic.bind({});
+CardLocal.args = {items}
 
 const ListTemplate = ({  store }: {  store: Store }) => {
-  return <DraggableList store={store}></DraggableList>;
+  return <DraggableCard store={store}></DraggableCard>;
 };
 
-export const ListStore = ListTemplate.bind({});
-ListStore.args = { store: cardStore };
+export const CardStore = ListTemplate.bind({});
+CardStore.args = { store: cardStore };

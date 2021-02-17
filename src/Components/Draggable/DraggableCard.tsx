@@ -52,7 +52,7 @@ const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
   );
 };
 
-const DraggableList = ({
+const DraggableCard = ({
   children,
   store,
 }: {
@@ -97,7 +97,7 @@ const DraggableList = ({
   return (
     <div className="draggableList">
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="list" direction="horizontal">
+        <Droppable droppableId="list" direction="horizontal" className="draggable">
           {(provided) => (
             <div
               ref={provided.innerRef}
@@ -124,4 +124,4 @@ const DraggableList = ({
   );
 };
 
-export { DraggableList };
+export { DraggableCard };
