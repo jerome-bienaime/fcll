@@ -76,29 +76,35 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
 
   const { lists } = store?.useState((state) => state);
 
-  function onDragEnd(result: { source: { droppableId: string; }; destination: { droppableId: string; }; }) {
-    console.log('source', result.source.droppableId);
-    console.log('destination', result.destination);
-
-    const getLastID = (value: string):number => {
-      const valueAsArray = value.split("-")
-      const lastID = valueAsArray[valueAsArray.length - 1]
+  function onDragEnd(result: {
+    source: { droppableId: string };
+    destination: { droppableId: string };
+  }) {
+    const getLastID = (value: string): number => {
+      const valueAsArray = value.split('-');
+      const lastID = valueAsArray[valueAsArray.length - 1];
       if (lastID != undefined) {
-        return parseInt(lastID)
+        return parseInt(lastID);
       }
-      return 0
-    }
+      return 0;
+    };
     store?.update((state) => {
-      const sourceListId = getLastID(result.source.droppableId)
-      const destListId = getLastID(result.destination.droppableId)
+      const sourceListId: number = getLastID(result.source.droppableId);
+      const destListId: number = getLastID(result.destination.droppableId);
 
-      if (sourceListId && destListId) {
-        state.lists.forEach((_: any, index: number) => {
-          if (index == destListId) {
-            state.lists[destListId].push(state.lists[sourceListId].pop());
+      state.lists.forEach((_: any, index: number) => {
+        if (index == destListId) {
+          state.lists[destListId].push(state.lists[sourceListId].pop());
+          if (state.lists[sourceListId].length !== 0) {
+            state.lists[sourceListId][state.lists[sourceListId].length - 1] = {
+              ...state.lists[sourceListId][
+                state.lists[sourceListId].length - 1
+              ],
+              draggable: true,
+            };
           }
-        });
-      }
+        }
+      });
     });
   }
 
