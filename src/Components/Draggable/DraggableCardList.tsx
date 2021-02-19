@@ -1,14 +1,16 @@
 import type { Store } from 'pullstate';
 import React from 'react';
-import { DragDropContext, Droppable, Draggable, DraggableStateSnapshot, DraggingStyle, NotDraggingStyle } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardProps } from '@components/Card';
 import { Cardslot } from '@components/Cardslot';
 import { Cardslotlist, ViewType } from '@components/Cardslotlist';
+import type { DraggableCardProps } from './Draggable.store';
+import _ from 'lodash';
 
 const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
   return (
     <Draggable draggableId={index.toString()} index={index}>
-      {(provided, snapshot) => {
+      {(provided) => {
         return (
           <div
             ref={provided.innerRef}
@@ -26,60 +28,97 @@ const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
   );
 };
 
+const DroppableItem = ({
+  id,
+  item,
+  dragId,
+}: {
+  id: string;
+  dragId: number;
+  item: DraggableCardProps;
+}) => {
+  const draggableItem: CardProps = {
+    numberIndex: item.numberIndex,
+    cardType: item.cardType,
+  };
+  return (
+    <Droppable droppableId={id}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          className="list"
+        >
+          <Cardslotlist viewType={ViewType.COLUMN}>
+            <DraggableItem item={draggableItem} index={dragId} key={dragId} />
+          </Cardslotlist>
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  );
+};
+
+const StaticItem = ({ item }: { item: DraggableCardProps }) => {
+  return (
+    <Cardslotlist viewType={ViewType.NORMAL}>
+      <Cardslot>
+        <Card {...item} />
+      </Cardslot>
+    </Cardslotlist>
+  );
+};
+
 const DraggableCardList = ({ store }: { store?: Store }) => {
   if (!store) {
     return <>nothing to drag and drop</>;
   }
 
-  const { lists, viewType } = store?.useState((state) => state);
+  const { lists } = store?.useState((state) => state);
 
-  function onDragEnd(result) {
-    console.log('source', result.source);
+  function onDragEnd(result: { source: { droppableId: string; }; destination: { droppableId: string; }; }) {
+    console.log('source', result.source.droppableId);
     console.log('destination', result.destination);
+
+    const getLastID = (value: string):number => {
+      const valueAsArray = value.split("-")
+      const lastID = valueAsArray[valueAsArray.length - 1]
+      if (lastID != undefined) {
+        return parseInt(lastID)
+      }
+      return 0
+    }
+    store?.update((state) => {
+      const sourceListId = getLastID(result.source.droppableId)
+      const destListId = getLastID(result.destination.droppableId)
+
+      if (sourceListId && destListId) {
+        state.lists.forEach((_: any, index: number) => {
+          if (index == destListId) {
+            state.lists[destListId].push(state.lists[sourceListId].pop());
+          }
+        });
+      }
+    });
   }
 
   return (
     <div className="draggable-card-list">
       <DragDropContext onDragEnd={onDragEnd}>
         {lists &&
-          lists.map((items: CardProps[], listIndex: number) => {
+          lists.map((items: DraggableCardProps[], listIndex: number) => {
             const id = `droppableId-${listIndex}`;
             return (
               <div>
-                <Cardslotlist viewType={viewType}>
-                  {items &&
-                    items.slice(0, -1).map((item, index) => {
-                      return (
-                        <Cardslot>
-                          <Card {...item} />
-                        </Cardslot>
-                      );
-                    })}
-                </Cardslotlist>
-                <Droppable droppableId={id} >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="list"
-                    >
-                      <Cardslotlist viewType={ViewType.NORMAL}>
-                        {items &&
-                          items.slice(-1).map((item, index) => {
-                            const dragId = (1 + listIndex) * (1 + index);
-                            return (
-                              <DraggableItem
-                                item={item}
-                                index={dragId}
-                                key={dragId}
-                              />
-                            );
-                          })}
-                      </Cardslotlist>
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
+                {items &&
+                  items.map((item: DraggableCardProps, index) => {
+                    const dragId = (1 + listIndex) * (1 + index);
+                    return item.draggable ? (
+                      <DroppableItem item={item} id={id} dragId={dragId} />
+                    ) : (
+                      <StaticItem item={item} />
+                    );
+                  })}
               </div>
             );
           })}
