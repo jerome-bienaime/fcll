@@ -7,7 +7,8 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s ./public",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook -s ./public -o storybook",
+    "deploy-storybook": "storybook-to-ghpages -- --existing-output-dir=storybook  --script=build-storybook"
   },
   "dependencies": {
     "lodash": "^4.17.20",
@@ -31,6 +32,7 @@
     "@storybook/addon-essentials": "^6.1.18",
     "@storybook/addon-links": "^6.1.18",
     "@storybook/react": "^6.1.18",
+    "@storybook/storybook-deployer": "^2.8.7",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@testing-library/react": "^11.0.0",
     "@types/chai": "^4.2.13",
