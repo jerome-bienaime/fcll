@@ -7,8 +7,9 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s ./public",
-    "build-storybook": "build-storybook -s ./public -o storybook",
-    "deploy-storybook": "storybook-to-ghpages -- --existing-output-dir=storybook  --script=build-storybook"
+    "build:storybook": "build-storybook -s ./public -o storybook",
+    "deploy:storybook": "storybook-to-ghpages -- --existing-output-dir=storybook  --script=build-storybook",
+    "publish:storybook": "npm run build-storybook && npm run deploy:storybook"
   },
   "dependencies": {
     "lodash": "^4.17.20",
