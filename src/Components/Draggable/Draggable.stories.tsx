@@ -4,7 +4,7 @@ import type { CardProps } from '@components/Card';
 import { Cardslot } from '@components/Cardslot';
 import { DraggableCard } from '.';
 import type { Store } from 'pullstate';
-import { cardListStore, cardStore, items } from './Draggable.store';
+import { cardListStore, cardStore, items } from '.';
 import { DraggableCardList } from './DraggableCardList';
 
 export default {

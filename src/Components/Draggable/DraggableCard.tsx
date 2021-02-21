@@ -55,28 +55,33 @@ const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
 const DraggableCard = ({
   children,
   store,
+  actions,
 }: {
   children?: ReactNode;
   store?: Store;
+  actions: Array<(store?: Store) => void>;
 }) => {
   if (!children && !store) {
     return <>nothing to dnd</>;
   }
 
   const items: CardProps[] = store?.useState((state) => state.items);
-  
 
-  function _move<T>(arr: Array<T>, destIndex: number, sourceIndex: number): Array<T> {
+  function _move<T>(
+    arr: Array<T>,
+    destIndex: number,
+    sourceIndex: number,
+  ): Array<T> {
     if (destIndex >= arr.length) {
-        let k = destIndex - arr.length + 1;
-        let empty: any = new Object();
-        while (k--) {
-            arr.push(empty);
-        }
+      let k = destIndex - arr.length + 1;
+      let empty: any = new Object();
+      while (k--) {
+        arr.push(empty);
+      }
     }
     arr.splice(destIndex, 0, arr.splice(sourceIndex, 1)[0]);
     return arr;
-};
+  }
 
   function onDragEnd(result: any) {
     if (!result.destination) {
@@ -85,9 +90,16 @@ const DraggableCard = ({
     if (result.destination.index === result.source.index) {
       return;
     }
+    if (actions && store) {
+      actions.forEach((action) => action(store));
+    }
     if (store) {
       store.update((state) => {
-        state.items = _move(state.items, result.destination.index, result.source.index);
+        state.items = _move(
+          state.items,
+          result.destination.index,
+          result.source.index,
+        );
       });
     }
   }
