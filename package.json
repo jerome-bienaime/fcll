@@ -8,8 +8,9 @@
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build:storybook": "build-storybook -s ./public -o storybook",
+    "assets:storybook": "ncp public/*.svg storybook/",
     "deploy:storybook": "storybook-to-ghpages -- --existing-output-dir=storybook  --script=build-storybook",
-    "publish:storybook": "npm run build-storybook && npm run deploy:storybook"
+    "publish:storybook": "npm run build:storybook && npm run assets:storybook && npm run deploy:storybook"
   },
   "dependencies": {
     "lodash": "^4.17.20",
@@ -51,6 +52,7 @@
     "chai": "^4.2.0",
     "enzyme": "^3.11.0",
     "jest": "^26.6.3",
+    "ncp": "^2.0.0",
     "postcss": "^7.0.35",
     "postcss-cli": "^8.3.1",
     "precss": "^4.0.0",
