@@ -14,17 +14,17 @@ export const items = [
     { numberIndex: 5, cardType: 0 },
     { numberIndex: 6, cardType: 0 },
     { numberIndex: 7, cardType: 0 },
-    { numberIndex: 8, cardType: 0 },
+    { numberIndex: 9, cardType: 0 },
   ];
 
 export const lists = [
     items.slice(0, -1).map(item => ({...item, draggable: false})), 
     items.slice(-1).map(item => ({...item, draggable: true})), 
     [
-        { numberIndex: 9, cardType: 0, draggable: false },
-        { numberIndex: 10, cardType: 0, draggable: false },
+        { numberIndex: 9, cardType: 2, draggable: false },
+        { numberIndex: 12, cardType: 0, draggable: false },
         { numberIndex: 11, cardType: 0, draggable: false },
-        { numberIndex: 12, cardType: 0, draggable: true },
+        { numberIndex: 10, cardType: 0, draggable: true },
     ],
     [
         { numberIndex: 0, cardType: 0, draggable: false },

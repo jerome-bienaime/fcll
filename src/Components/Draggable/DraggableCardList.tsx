@@ -5,7 +5,7 @@ import { Card, CardProps } from '@components/Card';
 import { Cardslot } from '@components/Cardslot';
 import { Cardslotlist, ViewType } from '@components/Cardslotlist';
 import type { DraggableCardProps } from './Draggable.store';
-import _ from 'lodash';
+import _, { last } from 'lodash';
 
 const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
   return (
@@ -28,7 +28,6 @@ const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
   );
 };
 
-
 const DroppableSlot = ({ id, dragId }: { id: string; dragId: number }) => {
   return (
     <Droppable droppableId={id}>
@@ -38,7 +37,7 @@ const DroppableSlot = ({ id, dragId }: { id: string; dragId: number }) => {
           {...provided.droppableProps}
           className="cardslotlist slot"
         >
-          <Cardslot/>
+          <Cardslot />
           {provided.placeholder}
         </div>
       )}
@@ -94,6 +93,20 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
 
   const { lists } = store?.useState((state) => state);
 
+  function isCardFollowing(
+    currentItem: DraggableCardProps | undefined,
+    previousItem: DraggableCardProps | undefined,
+  ): boolean {
+    if (currentItem === undefined || previousItem === undefined) {
+      return false;
+    }
+    const isSameType = currentItem.cardType === previousItem.cardType;
+    const isFollowing =
+      currentItem.numberIndex === previousItem.numberIndex + 1;
+      
+    return isFollowing && isSameType;
+  }
+
   function onDragEnd(result: {
     source: { droppableId: string };
     destination: { droppableId: string };
@@ -106,6 +119,17 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
       }
       return 0;
     };
+    const sourceListId: number = getLastID(result.source.droppableId);
+    const destListId: number = getLastID(result.destination.droppableId);
+
+    const previousItem: DraggableCardProps | undefined = last(
+      lists[sourceListId],
+    );
+    const currentItem: DraggableCardProps | undefined = last(lists[destListId]);
+    if (isCardFollowing(currentItem, previousItem) === false) {
+      return { ...result, reason: 'CANCEL' };
+    }
+
     store?.update((state) => {
       const sourceListId: number = getLastID(result.source.droppableId);
       const destListId: number = getLastID(result.destination.droppableId);
@@ -137,6 +161,7 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
                 <div>
                   {items.map((item: DraggableCardProps, index) => {
                     const dragId = (1 + listIndex) * (1 + index);
+
                     return item.draggable ? (
                       <DroppableItem item={item} id={id} dragId={dragId} />
                     ) : (
