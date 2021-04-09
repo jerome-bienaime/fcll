@@ -103,7 +103,7 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
     const isSameType = currentItem.cardType === previousItem.cardType;
     const isFollowing =
       currentItem.numberIndex === previousItem.numberIndex + 1;
-      
+
     return isFollowing && isSameType;
   }
 
@@ -131,9 +131,6 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
     }
 
     store?.update((state) => {
-      const sourceListId: number = getLastID(result.source.droppableId);
-      const destListId: number = getLastID(result.destination.droppableId);
-
       state.lists.forEach((_: any, index: number) => {
         if (index == destListId) {
           state.lists[destListId].push(state.lists[sourceListId].pop());
