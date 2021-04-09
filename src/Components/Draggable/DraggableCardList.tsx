@@ -28,6 +28,24 @@ const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
   );
 };
 
+
+const DroppableSlot = ({ id, dragId }: { id: string; dragId: number }) => {
+  return (
+    <Droppable droppableId={id}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          className="cardslotlist slot"
+        >
+          <Cardslot/>
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  );
+};
+
 const DroppableItem = ({
   id,
   item,
@@ -114,10 +132,10 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
         {lists &&
           lists.map((items: DraggableCardProps[], listIndex: number) => {
             const id = `droppableId-${listIndex}`;
-            return (
-              <div>
-                {items &&
-                  items.map((item: DraggableCardProps, index) => {
+            if (items.length) {
+              return (
+                <div>
+                  {items.map((item: DraggableCardProps, index) => {
                     const dragId = (1 + listIndex) * (1 + index);
                     return item.draggable ? (
                       <DroppableItem item={item} id={id} dragId={dragId} />
@@ -125,6 +143,12 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
                       <StaticItem item={item} />
                     );
                   })}
+                </div>
+              );
+            }
+            return (
+              <div>
+                <DroppableSlot id={id} dragId={1 + listIndex}></DroppableSlot>
               </div>
             );
           })}
