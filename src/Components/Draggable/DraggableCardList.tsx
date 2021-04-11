@@ -1,90 +1,11 @@
 import type { Store } from 'pullstate';
 import React from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Card, CardProps } from '@components/Card';
-import { Cardslot } from '@components/Cardslot';
-import { Cardslotlist, ViewType } from '@components/Cardslotlist';
+import { DragDropContext } from 'react-beautiful-dnd';
 import type { DraggableCardProps } from './Draggable.store';
 import _, { last } from 'lodash';
-
-const DraggableItem = ({ item, index }: { item: CardProps; index: number }) => {
-  return (
-    <Draggable draggableId={index.toString()} index={index}>
-      {(provided) => {
-        return (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            className="draggable-item"
-          >
-            <Cardslot>
-              <Card {...item} />
-            </Cardslot>
-          </div>
-        );
-      }}
-    </Draggable>
-  );
-};
-
-const DroppableSlot = ({ id, dragId }: { id: string; dragId: number }) => {
-  return (
-    <Droppable droppableId={id}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          className="cardslotlist slot"
-        >
-          <Cardslot />
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  );
-};
-
-const DroppableItem = ({
-  id,
-  item,
-  dragId,
-}: {
-  id: string;
-  dragId: number;
-  item: DraggableCardProps;
-}) => {
-  const draggableItem: CardProps = {
-    numberIndex: item.numberIndex,
-    cardType: item.cardType,
-  };
-  return (
-    <Droppable droppableId={id}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          className="list"
-        >
-          <Cardslotlist viewType={ViewType.COLUMN}>
-            <DraggableItem item={draggableItem} index={dragId} key={dragId} />
-          </Cardslotlist>
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  );
-};
-
-const StaticItem = ({ item }: { item: DraggableCardProps }) => {
-  return (
-    <Cardslotlist viewType={ViewType.NORMAL}>
-      <Cardslot>
-        <Card {...item} />
-      </Cardslot>
-    </Cardslotlist>
-  );
-};
+import { DroppableSlot } from './DroppableSlot';
+import { DroppableItem } from './DroppableItem';
+import { StaticItem } from './StaticItem';
 
 const DraggableCardList = ({ store }: { store?: Store }) => {
   if (!store) {
@@ -94,10 +15,10 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
   const { lists } = store?.useState((state) => state);
 
   function isCardFollowing(
-    currentItem: DraggableCardProps | undefined,
+    currentItem: DraggableCardProps,
     previousItem: DraggableCardProps | undefined,
   ): boolean {
-    if (currentItem === undefined || previousItem === undefined) {
+    if (previousItem == undefined) {
       return false;
     }
     const isSameType = currentItem.cardType === previousItem.cardType;
@@ -121,13 +42,16 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
     };
     const sourceListId: number = getLastID(result.source.droppableId);
     const destListId: number = getLastID(result.destination.droppableId);
-
     const previousItem: DraggableCardProps | undefined = last(
       lists[sourceListId],
     );
     const currentItem: DraggableCardProps | undefined = last(lists[destListId]);
-    if (isCardFollowing(currentItem, previousItem) === false) {
-      return { ...result, reason: 'CANCEL' };
+
+    if (
+      currentItem !== undefined &&
+      isCardFollowing(currentItem, previousItem) === false
+    ) {
+      return result;
     }
 
     store?.update((state) => {
