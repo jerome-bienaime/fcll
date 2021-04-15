@@ -1,11 +1,12 @@
 import type { Store } from 'pullstate';
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import type { DraggableCardProps } from './Draggable.store';
-import _, { last } from 'lodash';
+import type { DraggableCardProps, StackableCardProps } from './Draggable.store';
+import _, { last, reverse } from 'lodash';
 import { DroppableSlot } from './DroppableSlot';
 import { DroppableItem } from './DroppableItem';
 import { StaticItem } from './StaticItem';
+import { DroppableCardList } from './DroppableCardList';
 
 const DraggableCardList = ({ store }: { store?: Store }) => {
   if (!store) {
@@ -15,10 +16,13 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
   const { lists } = store?.useState((state) => state);
 
   function isCardFollowing(
-    currentItem: DraggableCardProps,
+    currentItem: DraggableCardProps | undefined,
     previousItem: DraggableCardProps | undefined,
   ): boolean {
     if (previousItem == undefined) {
+      return false;
+    }
+    if (currentItem == undefined) {
       return false;
     }
     const isSameType = currentItem.cardType === previousItem.cardType;
@@ -57,15 +61,49 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
     store?.update((state) => {
       state.lists.forEach((_: any, index: number) => {
         if (index == destListId) {
-          state.lists[destListId].push(state.lists[sourceListId].pop());
-          if (state.lists[sourceListId].length !== 0) {
-            state.lists[sourceListId][state.lists[sourceListId].length - 1] = {
-              ...state.lists[sourceListId][
-                state.lists[sourceListId].length - 1
-              ],
-              draggable: true,
-            };
+          if (lists[destListId].length > 1) {
+            const newCard = lists[sourceListId].pop();
+            const newList = [];
+            let listLength = lists[destListId].length - 1;
+
+            if (isCardFollowing(lists[destListId][listLength], newCard)) {
+              newList.push([
+                { ...lists[destListId][listLength], stacked: true },
+                { ...newCard, stacked: true },
+              ]);
+            }
+            while (listLength >= 0) {
+              if (
+                isCardFollowing(
+                  lists[destListId][listLength - 1],
+                  lists[destListId][listLength],
+                )
+              ) {
+                newList.push([
+                  { ...lists[destListId][listLength - 1], stacked: true },
+                  { ...lists[destListId][listLength], stacked: true },
+                ]);
+              } else {
+                newList.push(lists[destListId][listLength]);
+              }
+              listLength--;
+            }
+            state.lists[destListId] = reverse(newList);
+          } else {
+            console.log(lists);
+
+            state.lists[destListId].push(lists[sourceListId].pop());
           }
+
+          console.log(lists[sourceListId]);
+          let sourceIndex =
+            state.lists[sourceListId].length > 0
+              ? state.lists[sourceListId].length
+              : 0;
+          state.lists[sourceListId][state.lists[sourceListId].length - 1] = {
+            ...lists[sourceListId][sourceIndex],
+            draggable: true,
+          };
         }
       });
     });
@@ -80,14 +118,24 @@ const DraggableCardList = ({ store }: { store?: Store }) => {
             if (items.length) {
               return (
                 <div>
-                  {items.map((item: DraggableCardProps, index) => {
+                  {items.map((item: StackableCardProps, index) => {
                     const dragId = (1 + listIndex) * (1 + index);
 
-                    return item.draggable ? (
-                      <DroppableItem item={item} id={id} dragId={dragId} />
-                    ) : (
-                      <StaticItem item={item} />
-                    );
+                    if (Array.isArray(item)) {
+                      return (
+                        <DroppableCardList
+                          id={id}
+                          dragId={dragId}
+                          items={item}
+                        />
+                      );
+                    }
+                    if (item.draggable) {
+                      return (
+                        <DroppableItem item={item} id={id} dragId={dragId} />
+                      );
+                    }
+                    return <StaticItem item={item} />;
                   })}
                 </div>
               );

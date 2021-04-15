@@ -6,6 +6,10 @@ export interface DraggableCardProps extends CardProps {
     draggable?: boolean;
 }
 
+export interface StackableCardProps extends DraggableCardProps {
+    stacked?: boolean;
+}
+
 export const items = [
     { numberIndex: 1, cardType: 0 },
     { numberIndex: 2, cardType: 0 },
@@ -32,12 +36,7 @@ export const lists = [
         { numberIndex: 2, cardType: 1, draggable: false },
         { numberIndex: 3, cardType: 1, draggable: true },
     ],
-    [
-        { numberIndex: 4, cardType: 1, draggable: false },
-        { numberIndex: 5, cardType: 1, draggable: false },
-        { numberIndex: 6, cardType: 1, draggable: false },
-        { numberIndex: 7, cardType: 1, draggable: true },
-    ],
+   
 ]
   
 export const cardStore = new Store({ items });
