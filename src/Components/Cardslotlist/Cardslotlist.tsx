@@ -29,7 +29,7 @@ const Cardslotlist: React.FC<CardProps> = ({
     <div className={containerClassName}>
       {React.Children.map(children, (child, index) => {
         const itemClassName = `item`;
-        return <div className={itemClassName}>{React.cloneElement(child)}</div>;
+        return <div className={itemClassName} key={index}>{React.cloneElement(child)}</div>;
       })}
     </div>
   );
